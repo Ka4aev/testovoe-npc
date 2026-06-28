@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useCitizensStore } from '@/features';
 import { Badge, Button, Card, formatDate } from '@/shared';
-import { PageHeader, ProfileTabs } from '@/widgets';
+import { CitizenEditForm, PageHeader, ProfileTabs } from '@/widgets';
 
 export function CitizenProfilePage() {
   const { id } = useParams();
   const citizen = useCitizensStore((state) => state.citizens.find((item) => item.id === id));
+  const updateCitizen = useCitizensStore((state) => state.updateCitizen);
+  const [isEditing, setIsEditing] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
   if (!citizen) {
     return (
@@ -20,6 +24,22 @@ export function CitizenProfilePage() {
   }
 
   const primaryAppeal = citizen.appeals[0];
+
+  const assignExecutor = () => {
+    setNotice('Исполнитель назначен: Оператор линии 1.');
+  };
+
+  const changeStatus = () => {
+    const nextStatus = primaryAppeal.status === 'В работе' ? 'На согласовании' : 'В работе';
+    updateCitizen(citizen.id, {
+      appeals: citizen.appeals.map((appeal, index) => (index === 0 ? { ...appeal, status: nextStatus } : appeal)),
+    });
+    setNotice(`Статус обращения изменен на «${nextStatus}».`);
+  };
+
+  const createTask = () => {
+    setNotice('Создана задача на уточнение деталей обращения.');
+  };
 
   return (
     <div className="space-y-6">
@@ -52,9 +72,12 @@ export function CitizenProfilePage() {
 
 
             <div className="flex flex-wrap gap-3">
-              <Button type="button">Назначить исполнителя</Button>
-              <Button type="button">Изменить статус</Button>
-              <Button type="button">Создать задачу</Button>
+              <Button type="button" onClick={assignExecutor}>Назначить исполнителя</Button>
+              <Button type="button" onClick={changeStatus}>Изменить статус</Button>
+              <Button type="button" onClick={createTask}>Создать задачу</Button>
+              <Button type="button" variant="secondary" onClick={() => setIsEditing((current) => !current)}>
+                {isEditing ? 'Закрыть редактирование' : 'Изменить данные'}
+              </Button>
             </div>
           </div>
         </div>
@@ -70,6 +93,14 @@ export function CitizenProfilePage() {
           <Info label="Источник" value={citizen.source} />
         </div>
       </Card>
+
+      {notice ? (
+        <Card className="border-emerald-200 bg-emerald-50 text-emerald-800">
+          <p className="text-sm font-semibold">{notice}</p>
+        </Card>
+      ) : null}
+
+      {isEditing ? <CitizenEditForm citizen={citizen} onClose={() => setIsEditing(false)} /> : null}
 
       <ProfileTabs citizen={citizen} />
     </div>

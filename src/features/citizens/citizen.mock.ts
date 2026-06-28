@@ -100,8 +100,8 @@ export function createMockCitizens(count = 18): Citizen[] {
           status: pick(statuses, index),
           priority: pick(priorities, index),
           channel: pick(channels, index),
-          createdAt: `2026-06-${String((index % 20) + 1).padStart(2, '0')}`,
-          dueAt: `2026-07-${String((index % 20) + 1).padStart(2, '0')}`,
+          createdAt: `${index % 2 === 0 ? '2026-06' : '2026-05'}-${String((index % 20) + 1).padStart(2, '0')}`,
+          dueAt: `${index % 2 === 0 ? '2026-07' : '2026-06'}-${String((index % 20) + 1).padStart(2, '0')}`,
         },
       ],
     };

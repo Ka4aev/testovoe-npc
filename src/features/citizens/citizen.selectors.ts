@@ -103,18 +103,18 @@ export function useDashboardRegionSeries() {
   return useMemo(() => buildSeries(citizens.map((citizen) => citizen.region)), [citizens]);
 }
 
-export function useDashboardMonthlySeries() {
+export function useDashboardMonthlySeries(month: '2026-05' | '2026-06' = '2026-06') {
   const citizens = useCitizensStore((state) => state.citizens);
 
   return useMemo(() => {
-    const appeals = citizens.flatMap((citizen) => citizen.appeals);
+    const appeals = citizens.flatMap((citizen) => citizen.appeals).filter((appeal) => appeal.createdAt.startsWith(month));
     return buildSeries(
       appeals.map((appeal) => {
         const date = new Date(appeal.createdAt);
-        return date.toLocaleString('ru-RU', { month: 'short' });
+        return date.toLocaleString('ru-RU', { day: '2-digit' });
       }),
     );
-  }, [citizens]);
+  }, [citizens, month]);
 }
 
 export function useDashboardSlaSeries() {

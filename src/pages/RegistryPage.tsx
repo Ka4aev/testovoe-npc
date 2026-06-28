@@ -1,5 +1,5 @@
 import { useFilteredCitizens, useRegistryCounters } from '@/features';
-import { PageHeader, RegistryFilters, RegistrySortBar, RegistrySummary, RegistryTable } from '@/widgets';
+import { PageHeader, RegistryFilters, RegistrySummary, RegistryTable } from '@/widgets';
 
 export function RegistryPage() {
   const citizens = useFilteredCitizens();
@@ -14,7 +14,6 @@ export function RegistryPage() {
       />
       <RegistrySummary filtered={counters.filtered} total={counters.total} />
       <RegistryFilters />
-      <RegistrySortBar />
       <RegistryTable citizens={citizens} />
     </div>
   );
