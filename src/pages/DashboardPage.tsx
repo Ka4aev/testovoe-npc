@@ -21,6 +21,7 @@ export function DashboardPage() {
         <MonthlyDynamicsChart />
         <StatusBreakdownChart />
       </div>
+
       <div className="grid gap-6 xl:grid-cols-[1.2fr_1.3fr]">
         <RegionDistributionChart />
         <SlaOverview />
